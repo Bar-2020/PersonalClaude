@@ -28,17 +28,18 @@ Read the file and identify everything it needs to render. Look for:
 - **Props** — its `Props` interface/type and which fields are required.
 - **Hooks that need context:**
   - `useFormContext<T>()` (react-hook-form) → needs a `FormProvider`.
-  - `useScreenFlowOverride()` → reads `useOutletContext()`, needs a `MemoryRouter`
-    + `<Outlet context={...}>` (NOT a context provider).
-  - `useTranslation()` / `useHostShell()` → already satisfied by the root providers
-    in `src/main.tsx` (do not re-wrap these).
-  - `useQuery` / `useMutation` → already satisfied by the root `QueryClientProvider`.
+  - `useOutletContext()` or other router hooks → needs a `MemoryRouter` and a route
+    whose element renders `<Outlet context={...}>` (NOT a context provider).
+  - `useTranslation()` and similar → already satisfied by the root providers in
+    `src/main.tsx` (do not re-wrap these).
+  - `useQuery` / `useMutation` → already satisfied by the root data-fetching provider
+    (e.g. `QueryClientProvider`).
 - Any local component-specific context providers it expects.
 
-Note: `src/main.tsx` wraps `<App />` in `HostShellProvider` → `UmtbI18nProvider` →
-`UmtbThemeProvider` → `QueryClientProvider`. You are ONLY editing `src/App.tsx`, so
-all of these keep wrapping the isolated component automatically. Your sandbox only
-adds the extra, component-specific wrappers identified above.
+Note: `src/main.tsx` wraps `<App />` in the app's root providers (theme, i18n, data
+fetching). You are ONLY editing `src/App.tsx`, so all of these keep wrapping the
+isolated component automatically. Your sandbox only adds the extra, component-specific
+wrappers identified above.
 
 ## 2. Snapshot + backup
 
@@ -58,17 +59,17 @@ adds the extra, component-specific wrappers identified above.
 
 Create `src/__render-me__/Sandbox.tsx`. It must:
 
-- Import the real component by its path alias (`@features/...`, etc.) — never copy or
-  edit the real component.
+- Import the real component the way the project imports things (path alias or relative
+  path) — never copy or edit the real component.
 - Wrap it with ONLY the extra providers it needs (from step 1):
   - **Form:** if it uses `useFormContext<T>`, set up
     `const methods = useForm<T>({ defaultValues: <hardcoded sensible mock> })` and
     wrap in `<FormProvider {...methods}>`. Infer defaults from the form type (e.g.
     `{ step1: { startDate: <iso>, endDate: <iso> } }`).
-  - **Screenflow:** if it uses `useScreenFlowOverride`, wrap in `<MemoryRouter>` with
-    a route whose element renders `<Outlet context={mock} />`, where `mock` is
-    `{ provideNextRequest: () => {}, providePrevRequest: () => {}, reset: () => {}, nextResponses: [], overrideButtons: undefined }`.
-    The component renders as the child route so its `useOutletContext` resolves.
+  - **Router context:** if it uses `useOutletContext()`, wrap in `<MemoryRouter>` with
+    a route whose element renders `<Outlet context={mock} />`, where `mock` matches the
+    shape the component reads. The component renders as the child route so its
+    `useOutletContext` resolves.
   - **Props:** if it takes props, pass hardcoded mock props matching its `Props`
     interface (realistic values so it renders meaningfully).
 - Default-export a component named `RenderMeSandbox`.
@@ -78,8 +79,8 @@ is discarded on `/unrender-me`.
 
 ## 4. Swap `App.tsx`
 
-Edit `src/App.tsx` so it renders `<RenderMeSandbox />` instead of
-`<MfeYieldsAndBalances ... />`. Keep the dev-only language toggle block intact.
+Edit `src/App.tsx` so it renders `<RenderMeSandbox />` instead of what it currently
+renders. Keep any dev-only controls (such as a language toggle) intact.
 Wrap the swapped region in marker comments as a fallback restore locator:
 
 ```tsx
@@ -106,9 +107,9 @@ Create `.render-me/state.json`:
 
 ## 6. Verify and hand off
 
-Run `pnpm build` to confirm it compiles (this repo uses `pnpm build` for TS checks).
+Run the project's build script (e.g. `pnpm build`) to confirm it compiles.
 Report any errors and fix sandbox issues if they're yours. When green, tell the
 developer:
 
-> Isolated **<Component>**. Run `pnpm dev` and open http://localhost:4008.
+> Isolated **<Component>**. Start the dev server (e.g. `pnpm dev`) and open the URL it prints.
 > When done, run `/unrender-me` to restore — your edits to the component are kept.

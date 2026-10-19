@@ -7,7 +7,7 @@ relevant parts in its own `CLAUDE.md`.
 A project's own `CLAUDE.md` adds to these. If the two conflict, raise it with the user instead of
 picking a side silently.
 
-Distilled from Minyani and silent-whisker. Only rules that are not tied to one product are here.
+Distilled from my own projects. Only rules that are not tied to one product are here.
 
 ## How to work
 

@@ -36,9 +36,9 @@ developer's real work and are always kept.
 
 Restore `src/App.tsx` from `appTsxBackup` in the metadata. If the backup is missing
 or the file was heavily modified, fall back to removing the
-`RENDER-ME-START`/`RENDER-ME-END` marked region and reinstating the
-`<MfeYieldsAndBalances ... />` render. Verify the restored file no longer references
-`RenderMeSandbox`.
+`RENDER-ME-START`/`RENDER-ME-END` marked region and reinstating the original render,
+which you can read from the snapshot with `git show <snapshotSha>:src/App.tsx`. Verify
+the restored file no longer references `RenderMeSandbox`.
 
 ## 4. Delete scaffolding files
 
@@ -51,7 +51,7 @@ Delete the `.render-me/` directory (metadata + snapshot bookkeeping).
 
 ## 6. Verify and report
 
-Run `pnpm build` to confirm the app still compiles. Then report:
+Run the project's build script (e.g. `pnpm build`) to confirm the app still compiles. Then report:
 
 - **Removed:** `src/__render-me__/`, `.render-me/`, the `App.tsx` swap.
 - **Kept:** all edits to `<component>` and any other source files.

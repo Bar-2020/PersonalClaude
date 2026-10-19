@@ -32,13 +32,13 @@ The ruleset's PR step uses the `ponytail` and `ponytail-review` skills, which ar
 Claude Code and are not in this repo. A copy lives in
 [`Bar-2020/silent-whisker`](https://github.com/Bar-2020/silent-whisker/tree/main/.claude/skills).
 
-## The commands are written for one codebase
+## What the commands assume
 
-The four commands were written against a specific React, TypeScript and pnpm project, and they
-assume things about it: a `src/features/` layout with a fixed set of subfolders, a `development`
-base branch, `pnpm` scripts, a dev server on port 4008, and a particular set of shared UI packages
-and providers. In another project they will need adapting before they are useful.
+The commands are written for React and TypeScript projects that use `pnpm`. Check these before
+using them elsewhere:
 
-`/review-dev-diff` also mentions a `/fix-structure` command that is not in this repo.
+- `/review-dev-diff` compares against `origin/development`.
+- `/render-me` and `/unrender-me` expect an app entry at `src/App.tsx` and a build script.
+- `/extract-inline-styles` writes a `styles.ts` of `CSSProperties` objects next to the file.
 
 The ruleset in `.claude/CLAUDE.md` is generic and has no such assumptions.

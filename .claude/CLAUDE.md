@@ -50,8 +50,11 @@ ask before skipping the step.
 ## Code rules
 
 **Styles**
-- **No inline styles.** No `style` attribute or prop, no `element.style`. Styles live in a `.css`
-  file beside the component (CSS Modules). To vary a style, switch a class or a `data-*` attribute.
+- **No inline styles.** No `style={{ ... }}` object literals in markup and no `element.style`.
+  Styles live in a separate file: a `.css` file beside the component (CSS Modules, preferred) or
+  a typed `styles.ts` object used as `style={styles.x}`. With CSS Modules, vary a style by
+  switching a class or a `data-*` attribute. A project's own `CLAUDE.md` may tighten this to ban
+  the `style` prop entirely, as silent-whisker does.
 - **RTL-safe.** Use logical properties (`margin-inline-start`, `inset-inline-end`,
   `text-align: start`), never `left` or `right`.
 - **Mobile first.** Nothing scrolls sideways or is cut off from 360 px up. Breakpoints and design
